@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+#SBATCH -t 1:00:00
+#SBATCH -n 32
+#SBATCH -J test
+#SBATCH -p genoa
+#
+
+# load modules
+module load 2023
+module load VASP6/6.4.2-foss-2023a-VASPsol-VTST
+
+# launch VASP
+srun vasp_std >>out 2>>err
