@@ -48,7 +48,12 @@ calc = Vasp(
     
     # Additional ASE-specific parameters
     directory='vasp_run',
-    txt='vasp.out'
+    txt='vasp.out',
+
+    lsol=True,
+    eb_k= 78.4,
+    tau= 0,
+    lambda_d_k= 3.0
 )
 
 # Set the calculator for the atoms
