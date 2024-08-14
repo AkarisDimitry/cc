@@ -1,0 +1,17 @@
+for raiz, dirs, archivos in os.walk(directorio_raiz):
+    if 'CONTCAR' in archivos and 'WAVECAR' in archivos and 'CHGCAR' in archivos:
+        print(f"Procesando directorio: {raiz}")
+            
+        # Crear nueva carpeta
+        nueva_carpeta = os.path.join(raiz, 'relanzado')
+        os.makedirs(nueva_carpeta, exist_ok=True)
+            
+        # Copiar archivos necesarios
+        for archivo in ['WAVECAR', 'CHGCAR']:
+            shutil.copy(os.path.join(raiz, archivo), nueva_carpeta)
+            
+        # Leer estructura de CONTCAR
+        atoms = read(os.path.join(raiz, 'CONTCAR'))
+            
+        # Cambiar al nuevo directorio
+        os.chdir(nueva_carpeta)
