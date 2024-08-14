@@ -54,7 +54,52 @@ def submit_vasp_calculation(ase_atoms_object,path_to_files,slurm=False,tasks=34,
         subprocess.run(['sbatch','submit.sh'])
     os.chdir(origin)
     
-directorio_raiz = '/ruta/a/tu/directorio/principal'
+path = glob.glob('/home/ifilot/vasp/workshop/structures/*x*/Ag_CO2*/*eVA/CONTCAR')
+
+for f in path:
+    atoms = read(f,format='vasp')
+    direct = '/'.join(f.split('/')[0:-1])+'/'
+    sub_folder = 'relaunched_vaspsolv'
+    work = os.path.join(direct, sub_folder)
+    directory_maker(work)
+    files = glob.glob(f'{direct}*')
+    filename = f.split('/')[-1].split('.')[0]
+    for potential in [0.01,0.05,0.1]:
+        work = f'{direct}/{filename}_potential_{round(potential,4)}eVA/'
+        directory_maker(work)
+        os.chdir(work)
+        atoms.calc = Vasp(xc='RPBE',
+                          encut=400,
+                          kspacing =0.3,
+                          istart=0,
+                          icharg=2,
+                          prec='Accurate',
+                          ediff=1e-5,
+                          nelm=100,
+                          nelmin=6,
+                          nsw=0,
+                          ibrion=-1,
+                          isif=2,
+                          ediffg=-0.01,
+                          ivdw=11,
+                          
+                          # Electric field parameters
+                          efield=potential,  # Applied electric field
+                          ldipol=True,
+                          idipol=3,
+                          # VASP-sol parameters for implicit solvation in water
+                          lsol=True,
+                          eb_k=78.4,
+                          tau=0,
+                          lambda_d_k=3.0,
+                          nc_k=0.0025,
+                          sigma_k=0.6,
+                          lwave=True,
+                          npar=4,
+                          dipol=[0.5,0.5,0.4]
+                         )
+        atoms.calc.write_input(atoms = atoms)
+        submit_vasp_calculation(ase_atoms_object=atoms, path_to_files=work,slurm=True,tasks=64,time_cap='01:00:00')
 
 for raiz, dirs, archivos in os.walk(directorio_raiz):
     if 'CONTCAR' in archivos and 'WAVECAR' in archivos and 'CHGCAR' in archivos:
