@@ -7,7 +7,7 @@ def run_vasp_calculation(atoms, potential):
     calc = Vasp(
         xc='RPBE',
         encut=400,
-        kspacing=0.03,
+        kspacing=0.3,
         istart=0,
         icharg=2,
         prec='Accurate',
@@ -24,12 +24,9 @@ def run_vasp_calculation(atoms, potential):
         efield=potential,  # Applied potential
         ldipol=True,
         idipol=3,
+        dipol = [0.5,0.5,0.4],
         
-        # Constant potential parameters
-        bpotim=0.1,
-        smass=0,
-        nelect=100,  # Adjust this to your system's total number of electrons
-        
+       
         # VASP-sol parameters for implicit solvation in water
         lsol=True,
         eb_k=78.4,
