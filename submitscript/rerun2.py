@@ -55,7 +55,7 @@ def relaunch_vasp_calculation(path):
     atoms.calc = Vasp(
         xc='RPBE',
         encut=400,
-        kspacing=0.03,
+        kspacing=0.3,
         istart=1,  # Start from WAVECAR
         icharg=1,  # Read charge density from CHGCAR
         prec='Accurate',
